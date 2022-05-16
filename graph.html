@@ -1,0 +1,219 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 100%;
+            height: 800px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+        #loadingBar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width: 100%;
+            height: 800px;
+            background-color:rgba(200,200,200,0.8);
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            opacity:1;
+        }
+
+        #bar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width:20px;
+            height:20px;
+            margin:auto auto auto auto;
+            border-radius:11px;
+            border:2px solid rgba(30,30,30,0.05);
+            background: rgb(0, 173, 246); /* Old browsers */
+            box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+        }
+
+        #border {
+            position:absolute;
+            top:10px;
+            left:10px;
+            width:500px;
+            height:23px;
+            margin:auto auto auto auto;
+            box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+            border-radius:10px;
+        }
+
+        #text {
+            position:absolute;
+            top:8px;
+            left:530px;
+            width:30px;
+            height:50px;
+            margin:auto auto auto auto;
+            font-size:22px;
+            color: #000000;
+        }
+
+        div.outerBorder {
+            position:relative;
+            top:400px;
+            width:600px;
+            height:44px;
+            margin:auto auto auto auto;
+            border:8px solid rgba(0,0,0,0.1);
+            background: rgb(252,252,252); /* Old browsers */
+            background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+            border-radius:72px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+        
+
+        
+        #config {
+            float: left;
+            width: 400px;
+            height: 600px;
+        }
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+<div id="loadingBar">
+    <div class="outerBorder">
+        <div id="text">0%</div>
+        <div id="border">
+            <div id="bar"></div>
+        </div>
+    </div>
+</div>
+
+
+<div id = "config"></div>
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#f54242", "font": "30px arial black", "id": "AaltoUniversity", "label": "Aalto", "shape": "dot", "size": 20}, {"color": "#427ef5", "font": "30px arial black", "id": "helsinkiuni", "label": "Uni of Helsinki", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "913433745297899522", "label": "913433745297899522", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "849084440", "label": "849084440", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "1338769440", "label": "1338769440", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1320738800407089152", "label": "1320738800407089152", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "3170762787", "label": "3170762787", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "39714852", "label": "39714852", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "2903638053", "label": "2903638053", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "58458149", "label": "58458149", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1273564671258308609", "label": "1273564671258308609", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "156893225", "label": "156893225", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "1246101558", "label": "1246101558", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "28311607", "label": "28311607", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "84017214", "label": "84017214", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "975730163983028225", "label": "975730163983028225", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1243230317172985856", "label": "1243230317172985856", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1457140219753476098", "label": "1457140219753476098", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "128188485", "label": "128188485", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "823153539665039360", "label": "823153539665039360", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "820923444602802176", "label": "820923444602802176", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "216793172", "label": "216793172", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "3964272723", "label": "3964272723", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "226099350", "label": "226099350", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "38011034", "label": "38011034", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "2890530981", "label": "2890530981", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "156631207", "label": "156631207", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "2819096756", "label": "2819096756", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "2258895032", "label": "2258895032", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "23462074", "label": "23462074", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "831783098", "label": "831783098", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "372244675", "label": "372244675", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "3585605837", "label": "3585605837", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "463339738", "label": "463339738", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "2476998878", "label": "2476998878", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "719585509", "label": "719585509", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "1092783122842902528", "label": "1092783122842902528", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "2497708287", "label": "2497708287", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "953999701799591937", "label": "953999701799591937", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1184875627322793985", "label": "1184875627322793985", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1071045471542697985", "label": "1071045471542697985", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1216740896601006081", "label": "1216740896601006081", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "119144743", "label": "119144743", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "1045310039307759616", "label": "1045310039307759616", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "1193062312124526592", "label": "1193062312124526592", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "741355630447996928", "label": "741355630447996928", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "107086140", "label": "107086140", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "1141446387701297153", "label": "1141446387701297153", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "776008295488389120", "label": "776008295488389120", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "34603510", "label": "34603510", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "879295884554633217", "label": "879295884554633217", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "17564168", "label": "17564168", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "2338062860", "label": "2338062860", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1090533270918516736", "label": "1090533270918516736", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "35143687", "label": "35143687", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "1466696232", "label": "1466696232", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "4173464115", "label": "4173464115", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "40632889", "label": "40632889", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "50332223", "label": "50332223", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "49939028", "label": "49939028", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "2817786462", "label": "2817786462", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "376701556", "label": "376701556", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "409338486", "label": "409338486", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "2444362362", "label": "2444362362", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "829917412187267072", "label": "829917412187267072", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "1680999050", "label": "1680999050", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "3373531786", "label": "3373531786", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "2304508562", "label": "2304508562", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1392434484356829184", "label": "1392434484356829184", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "2507276948", "label": "2507276948", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "2792096406", "label": "2792096406", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "56623782", "label": "56623782", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1143851629814472704", "label": "1143851629814472704", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "2824340152", "label": "2824340152", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "211944124", "label": "211944124", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "2304639684", "label": "2304639684", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "1228145353", "label": "1228145353", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "946471628", "label": "946471628", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "742631305863700480", "label": "742631305863700480", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1389466192528744448", "label": "1389466192528744448", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1400497858843975681", "label": "1400497858843975681", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "3172336367", "label": "3172336367", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "156893944", "label": "156893944", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "407896826", "label": "407896826", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "28967679", "label": "28967679", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1481545625409888258", "label": "1481545625409888258", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1059507259158466560", "label": "1059507259158466560", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1647837955", "label": "1647837955", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "350749450", "label": "350749450", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "42599187", "label": "42599187", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "1222784276111994880", "label": "1222784276111994880", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "1396966195", "label": "1396966195", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1219193024602750976", "label": "1219193024602750976", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "2785936189", "label": "2785936189", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "3243770692", "label": "3243770692", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "3126330196", "label": "3126330196", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "2186150750", "label": "2186150750", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "102630256", "label": "102630256", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "1947599730", "label": "1947599730", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "3027764087", "label": "3027764087", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "2974942084", "label": "2974942084", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "245760902", "label": "245760902", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "1652949902", "label": "1652949902", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1060411731225309184", "label": "1060411731225309184", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "2845311909", "label": "2845311909", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "118227879", "label": "118227879", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "2303329192", "label": "2303329192", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "61342631", "label": "61342631", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1383859117", "label": "1383859117", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "2995651503", "label": "2995651503", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1057030969520209920", "label": "1057030969520209920", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1137245126420512768", "label": "1137245126420512768", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "2422604730", "label": "2422604730", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "407765954", "label": "407765954", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "373294023", "label": "373294023", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "779312941854228480", "label": "779312941854228480", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "77202376", "label": "77202376", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "2325480399", "label": "2325480399", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "1083604296640417792", "label": "1083604296640417792", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "3060279023", "label": "3060279023", "shape": "dot", "size": 20}, {"color": "#6495ed", "id": "72090603", "label": "72090603", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "861613311137370112", "label": "861613311137370112", "shape": "dot", "size": 20}, {"color": "#D85678", "id": "39977971", "label": "39977971", "shape": "dot", "size": 20}, {"color": "#FFA500", "id": "42206206", "label": "42206206", "shape": "dot", "size": 20}]);
+        edges = new vis.DataSet([{"arrows": "to", "from": "913433745297899522", "to": "AaltoUniversity"}, {"arrows": "to", "from": "849084440", "to": "helsinkiuni"}, {"arrows": "to", "from": "1338769440", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1338769440", "to": "helsinkiuni"}, {"arrows": "to", "from": "1320738800407089152", "to": "helsinkiuni"}, {"arrows": "to", "from": "3170762787", "to": "AaltoUniversity"}, {"arrows": "to", "from": "39714852", "to": "AaltoUniversity"}, {"arrows": "to", "from": "39714852", "to": "helsinkiuni"}, {"arrows": "to", "from": "2903638053", "to": "AaltoUniversity"}, {"arrows": "to", "from": "58458149", "to": "AaltoUniversity"}, {"arrows": "to", "from": "58458149", "to": "helsinkiuni"}, {"arrows": "to", "from": "1273564671258308609", "to": "helsinkiuni"}, {"arrows": "to", "from": "156893225", "to": "AaltoUniversity"}, {"arrows": "to", "from": "156893225", "to": "helsinkiuni"}, {"arrows": "to", "from": "1246101558", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1246101558", "to": "helsinkiuni"}, {"arrows": "to", "from": "28311607", "to": "AaltoUniversity"}, {"arrows": "to", "from": "84017214", "to": "AaltoUniversity"}, {"arrows": "to", "from": "84017214", "to": "helsinkiuni"}, {"arrows": "to", "from": "975730163983028225", "to": "helsinkiuni"}, {"arrows": "to", "from": "1243230317172985856", "to": "helsinkiuni"}, {"arrows": "to", "from": "1457140219753476098", "to": "helsinkiuni"}, {"arrows": "to", "from": "128188485", "to": "AaltoUniversity"}, {"arrows": "to", "from": "823153539665039360", "to": "AaltoUniversity"}, {"arrows": "to", "from": "823153539665039360", "to": "helsinkiuni"}, {"arrows": "to", "from": "820923444602802176", "to": "AaltoUniversity"}, {"arrows": "to", "from": "820923444602802176", "to": "helsinkiuni"}, {"arrows": "to", "from": "216793172", "to": "AaltoUniversity"}, {"arrows": "to", "from": "3964272723", "to": "helsinkiuni"}, {"arrows": "to", "from": "226099350", "to": "AaltoUniversity"}, {"arrows": "to", "from": "226099350", "to": "helsinkiuni"}, {"arrows": "to", "from": "38011034", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2890530981", "to": "helsinkiuni"}, {"arrows": "to", "from": "156631207", "to": "helsinkiuni"}, {"arrows": "to", "from": "2819096756", "to": "helsinkiuni"}, {"arrows": "to", "from": "2258895032", "to": "AaltoUniversity"}, {"arrows": "to", "from": "23462074", "to": "AaltoUniversity"}, {"arrows": "to", "from": "23462074", "to": "helsinkiuni"}, {"arrows": "to", "from": "831783098", "to": "AaltoUniversity"}, {"arrows": "to", "from": "831783098", "to": "helsinkiuni"}, {"arrows": "to", "from": "372244675", "to": "AaltoUniversity"}, {"arrows": "to", "from": "372244675", "to": "helsinkiuni"}, {"arrows": "to", "from": "3585605837", "to": "AaltoUniversity"}, {"arrows": "to", "from": "3585605837", "to": "helsinkiuni"}, {"arrows": "to", "from": "463339738", "to": "AaltoUniversity"}, {"arrows": "to", "from": "463339738", "to": "helsinkiuni"}, {"arrows": "to", "from": "2476998878", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2476998878", "to": "helsinkiuni"}, {"arrows": "to", "from": "719585509", "to": "AaltoUniversity"}, {"arrows": "to", "from": "719585509", "to": "helsinkiuni"}, {"arrows": "to", "from": "1092783122842902528", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1092783122842902528", "to": "helsinkiuni"}, {"arrows": "to", "from": "2497708287", "to": "helsinkiuni"}, {"arrows": "to", "from": "953999701799591937", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1184875627322793985", "to": "helsinkiuni"}, {"arrows": "to", "from": "1071045471542697985", "to": "helsinkiuni"}, {"arrows": "to", "from": "1216740896601006081", "to": "helsinkiuni"}, {"arrows": "to", "from": "119144743", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1045310039307759616", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1045310039307759616", "to": "helsinkiuni"}, {"arrows": "to", "from": "1193062312124526592", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1193062312124526592", "to": "helsinkiuni"}, {"arrows": "to", "from": "741355630447996928", "to": "AaltoUniversity"}, {"arrows": "to", "from": "741355630447996928", "to": "helsinkiuni"}, {"arrows": "to", "from": "107086140", "to": "AaltoUniversity"}, {"arrows": "to", "from": "107086140", "to": "helsinkiuni"}, {"arrows": "to", "from": "1141446387701297153", "to": "AaltoUniversity"}, {"arrows": "to", "from": "776008295488389120", "to": "AaltoUniversity"}, {"arrows": "to", "from": "776008295488389120", "to": "helsinkiuni"}, {"arrows": "to", "from": "34603510", "to": "AaltoUniversity"}, {"arrows": "to", "from": "34603510", "to": "helsinkiuni"}, {"arrows": "to", "from": "879295884554633217", "to": "AaltoUniversity"}, {"arrows": "to", "from": "17564168", "to": "helsinkiuni"}, {"arrows": "to", "from": "2338062860", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2338062860", "to": "helsinkiuni"}, {"arrows": "to", "from": "1090533270918516736", "to": "helsinkiuni"}, {"arrows": "to", "from": "35143687", "to": "AaltoUniversity"}, {"arrows": "to", "from": "35143687", "to": "helsinkiuni"}, {"arrows": "to", "from": "1466696232", "to": "AaltoUniversity"}, {"arrows": "to", "from": "4173464115", "to": "helsinkiuni"}, {"arrows": "to", "from": "40632889", "to": "helsinkiuni"}, {"arrows": "to", "from": "50332223", "to": "AaltoUniversity"}, {"arrows": "to", "from": "50332223", "to": "helsinkiuni"}, {"arrows": "to", "from": "49939028", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2817786462", "to": "helsinkiuni"}, {"arrows": "to", "from": "376701556", "to": "helsinkiuni"}, {"arrows": "to", "from": "409338486", "to": "helsinkiuni"}, {"arrows": "to", "from": "2444362362", "to": "AaltoUniversity"}, {"arrows": "to", "from": "829917412187267072", "to": "helsinkiuni"}, {"arrows": "to", "from": "1680999050", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1680999050", "to": "helsinkiuni"}, {"arrows": "to", "from": "3373531786", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2304508562", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1392434484356829184", "to": "helsinkiuni"}, {"arrows": "to", "from": "2507276948", "to": "helsinkiuni"}, {"arrows": "to", "from": "2792096406", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2792096406", "to": "helsinkiuni"}, {"arrows": "to", "from": "56623782", "to": "helsinkiuni"}, {"arrows": "to", "from": "1143851629814472704", "to": "helsinkiuni"}, {"arrows": "to", "from": "2824340152", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2824340152", "to": "helsinkiuni"}, {"arrows": "to", "from": "211944124", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2304639684", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2304639684", "to": "helsinkiuni"}, {"arrows": "to", "from": "1228145353", "to": "AaltoUniversity"}, {"arrows": "to", "from": "946471628", "to": "AaltoUniversity"}, {"arrows": "to", "from": "742631305863700480", "to": "AaltoUniversity"}, {"arrows": "to", "from": "742631305863700480", "to": "helsinkiuni"}, {"arrows": "to", "from": "1389466192528744448", "to": "helsinkiuni"}, {"arrows": "to", "from": "1400497858843975681", "to": "helsinkiuni"}, {"arrows": "to", "from": "3172336367", "to": "AaltoUniversity"}, {"arrows": "to", "from": "3172336367", "to": "helsinkiuni"}, {"arrows": "to", "from": "156893944", "to": "AaltoUniversity"}, {"arrows": "to", "from": "156893944", "to": "helsinkiuni"}, {"arrows": "to", "from": "407896826", "to": "helsinkiuni"}, {"arrows": "to", "from": "28967679", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1481545625409888258", "to": "helsinkiuni"}, {"arrows": "to", "from": "1059507259158466560", "to": "helsinkiuni"}, {"arrows": "to", "from": "1647837955", "to": "helsinkiuni"}, {"arrows": "to", "from": "350749450", "to": "AaltoUniversity"}, {"arrows": "to", "from": "42599187", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1222784276111994880", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1222784276111994880", "to": "helsinkiuni"}, {"arrows": "to", "from": "1396966195", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1219193024602750976", "to": "helsinkiuni"}, {"arrows": "to", "from": "2785936189", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2785936189", "to": "helsinkiuni"}, {"arrows": "to", "from": "3243770692", "to": "AaltoUniversity"}, {"arrows": "to", "from": "3126330196", "to": "AaltoUniversity"}, {"arrows": "to", "from": "3126330196", "to": "helsinkiuni"}, {"arrows": "to", "from": "2186150750", "to": "helsinkiuni"}, {"arrows": "to", "from": "102630256", "to": "AaltoUniversity"}, {"arrows": "to", "from": "102630256", "to": "helsinkiuni"}, {"arrows": "to", "from": "1947599730", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1947599730", "to": "helsinkiuni"}, {"arrows": "to", "from": "3027764087", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2974942084", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2974942084", "to": "helsinkiuni"}, {"arrows": "to", "from": "245760902", "to": "helsinkiuni"}, {"arrows": "to", "from": "1652949902", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1652949902", "to": "helsinkiuni"}, {"arrows": "to", "from": "1060411731225309184", "to": "helsinkiuni"}, {"arrows": "to", "from": "2845311909", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2845311909", "to": "helsinkiuni"}, {"arrows": "to", "from": "118227879", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2303329192", "to": "AaltoUniversity"}, {"arrows": "to", "from": "2303329192", "to": "helsinkiuni"}, {"arrows": "to", "from": "61342631", "to": "helsinkiuni"}, {"arrows": "to", "from": "1383859117", "to": "helsinkiuni"}, {"arrows": "to", "from": "2995651503", "to": "AaltoUniversity"}, {"arrows": "to", "from": "1057030969520209920", "to": "helsinkiuni"}, {"arrows": "to", "from": "1137245126420512768", "to": "helsinkiuni"}, {"arrows": "to", "from": "2422604730", "to": "helsinkiuni"}, {"arrows": "to", "from": "407765954", "to": "AaltoUniversity"}, {"arrows": "to", "from": "407765954", "to": "helsinkiuni"}, {"arrows": "to", "from": "373294023", "to": "AaltoUniversity"}, {"arrows": "to", "from": "779312941854228480", "to": "AaltoUniversity"}, {"arrows": "to", "from": "779312941854228480", "to": "helsinkiuni"}, {"arrows": "to", "from": "77202376", "to": "helsinkiuni"}, {"arrows": "to", "from": "2325480399", "to": "helsinkiuni"}, {"arrows": "to", "from": "1083604296640417792", "to": "helsinkiuni"}, {"arrows": "to", "from": "3060279023", "to": "helsinkiuni"}, {"arrows": "to", "from": "72090603", "to": "helsinkiuni"}, {"arrows": "to", "from": "861613311137370112", "to": "AaltoUniversity"}, {"arrows": "to", "from": "861613311137370112", "to": "helsinkiuni"}, {"arrows": "to", "from": "39977971", "to": "AaltoUniversity"}, {"arrows": "to", "from": "39977971", "to": "helsinkiuni"}, {"arrows": "to", "from": "42206206", "to": "AaltoUniversity"}, {"arrows": "to", "from": "913433745297899522", "to": "1457140219753476098"}, {"arrows": "to", "from": "913433745297899522", "to": "23462074"}, {"arrows": "to", "from": "913433745297899522", "to": "953999701799591937"}, {"arrows": "to", "from": "1338769440", "to": "1059507259158466560"}, {"arrows": "to", "from": "1338769440", "to": "35143687"}, {"arrows": "to", "from": "1338769440", "to": "2792096406"}, {"arrows": "to", "from": "1338769440", "to": "719585509"}, {"arrows": "to", "from": "1338769440", "to": "1246101558"}, {"arrows": "to", "from": "1338769440", "to": "861613311137370112"}, {"arrows": "to", "from": "1338769440", "to": "50332223"}, {"arrows": "to", "from": "1338769440", "to": "1647837955"}, {"arrows": "to", "from": "39714852", "to": "34603510"}, {"arrows": "to", "from": "58458149", "to": "2303329192"}, {"arrows": "to", "from": "156893225", "to": "38011034"}, {"arrows": "to", "from": "1246101558", "to": "2186150750"}, {"arrows": "to", "from": "1246101558", "to": "376701556"}, {"arrows": "to", "from": "1246101558", "to": "2792096406"}, {"arrows": "to", "from": "1246101558", "to": "776008295488389120"}, {"arrows": "to", "from": "1246101558", "to": "35143687"}, {"arrows": "to", "from": "1246101558", "to": "3172336367"}, {"arrows": "to", "from": "1246101558", "to": "1338769440"}, {"arrows": "to", "from": "28311607", "to": "3126330196"}, {"arrows": "to", "from": "28311607", "to": "17564168"}, {"arrows": "to", "from": "84017214", "to": "2890530981"}, {"arrows": "to", "from": "84017214", "to": "1222784276111994880"}, {"arrows": "to", "from": "84017214", "to": "50332223"}, {"arrows": "to", "from": "84017214", "to": "38011034"}, {"arrows": "to", "from": "84017214", "to": "49939028"}, {"arrows": "to", "from": "84017214", "to": "407896826"}, {"arrows": "to", "from": "1457140219753476098", "to": "913433745297899522"}, {"arrows": "to", "from": "128188485", "to": "226099350"}, {"arrows": "to", "from": "820923444602802176", "to": "946471628"}, {"arrows": "to", "from": "216793172", "to": "49939028"}, {"arrows": "to", "from": "216793172", "to": "211944124"}, {"arrows": "to", "from": "3964272723", "to": "1481545625409888258"}, {"arrows": "to", "from": "38011034", "to": "1396966195"}, {"arrows": "to", "from": "38011034", "to": "156893225"}, {"arrows": "to", "from": "156631207", "to": "3126330196"}, {"arrows": "to", "from": "372244675", "to": "3172336367"}, {"arrows": "to", "from": "372244675", "to": "1338769440"}, {"arrows": "to", "from": "3585605837", "to": "1466696232"}, {"arrows": "to", "from": "3585605837", "to": "2785936189"}, {"arrows": "to", "from": "463339738", "to": "1141446387701297153"}, {"arrows": "to", "from": "463339738", "to": "2824340152"}, {"arrows": "to", "from": "463339738", "to": "373294023"}, {"arrows": "to", "from": "719585509", "to": "42599187"}, {"arrows": "to", "from": "1092783122842902528", "to": "823153539665039360"}, {"arrows": "to", "from": "1092783122842902528", "to": "1647837955"}, {"arrows": "to", "from": "1092783122842902528", "to": "2507276948"}, {"arrows": "to", "from": "2497708287", "to": "2422604730"}, {"arrows": "to", "from": "1071045471542697985", "to": "1320738800407089152"}, {"arrows": "to", "from": "1216740896601006081", "to": "2792096406"}, {"arrows": "to", "from": "119144743", "to": "2444362362"}, {"arrows": "to", "from": "1045310039307759616", "to": "1680999050"}, {"arrows": "to", "from": "107086140", "to": "23462074"}, {"arrows": "to", "from": "107086140", "to": "2444362362"}, {"arrows": "to", "from": "776008295488389120", "to": "1246101558"}, {"arrows": "to", "from": "34603510", "to": "2819096756"}, {"arrows": "to", "from": "34603510", "to": "39714852"}, {"arrows": "to", "from": "17564168", "to": "1466696232"}, {"arrows": "to", "from": "17564168", "to": "946471628"}, {"arrows": "to", "from": "17564168", "to": "28311607"}, {"arrows": "to", "from": "17564168", "to": "350749450"}, {"arrows": "to", "from": "2338062860", "to": "2792096406"}, {"arrows": "to", "from": "2338062860", "to": "2476998878"}, {"arrows": "to", "from": "2338062860", "to": "3585605837"}, {"arrows": "to", "from": "35143687", "to": "2303329192"}, {"arrows": "to", "from": "1466696232", "to": "3585605837"}, {"arrows": "to", "from": "1466696232", "to": "946471628"}, {"arrows": "to", "from": "1466696232", "to": "17564168"}, {"arrows": "to", "from": "50332223", "to": "84017214"}, {"arrows": "to", "from": "50332223", "to": "35143687"}, {"arrows": "to", "from": "50332223", "to": "3172336367"}, {"arrows": "to", "from": "50332223", "to": "2817786462"}, {"arrows": "to", "from": "50332223", "to": "1338769440"}, {"arrows": "to", "from": "49939028", "to": "84017214"}, {"arrows": "to", "from": "2817786462", "to": "50332223"}, {"arrows": "to", "from": "409338486", "to": "820923444602802176"}, {"arrows": "to", "from": "409338486", "to": "407765954"}, {"arrows": "to", "from": "2444362362", "to": "107086140"}, {"arrows": "to", "from": "2444362362", "to": "119144743"}, {"arrows": "to", "from": "829917412187267072", "to": "742631305863700480"}, {"arrows": "to", "from": "1680999050", "to": "1045310039307759616"}, {"arrows": "to", "from": "3373531786", "to": "226099350"}, {"arrows": "to", "from": "2304508562", "to": "42206206"}, {"arrows": "to", "from": "1392434484356829184", "to": "2304639684"}, {"arrows": "to", "from": "2507276948", "to": "1092783122842902528"}, {"arrows": "to", "from": "1143851629814472704", "to": "2792096406"}, {"arrows": "to", "from": "2824340152", "to": "3126330196"}, {"arrows": "to", "from": "2824340152", "to": "820923444602802176"}, {"arrows": "to", "from": "2824340152", "to": "72090603"}, {"arrows": "to", "from": "2824340152", "to": "946471628"}, {"arrows": "to", "from": "211944124", "to": "946471628"}, {"arrows": "to", "from": "211944124", "to": "216793172"}, {"arrows": "to", "from": "2304639684", "to": "1392434484356829184"}, {"arrows": "to", "from": "2304639684", "to": "829917412187267072"}, {"arrows": "to", "from": "2304639684", "to": "77202376"}, {"arrows": "to", "from": "1228145353", "to": "58458149"}, {"arrows": "to", "from": "1228145353", "to": "56623782"}, {"arrows": "to", "from": "1228145353", "to": "1059507259158466560"}, {"arrows": "to", "from": "1228145353", "to": "156893944"}, {"arrows": "to", "from": "946471628", "to": "1466696232"}, {"arrows": "to", "from": "946471628", "to": "820923444602802176"}, {"arrows": "to", "from": "946471628", "to": "3126330196"}, {"arrows": "to", "from": "946471628", "to": "2824340152"}, {"arrows": "to", "from": "946471628", "to": "211944124"}, {"arrows": "to", "from": "946471628", "to": "17564168"}, {"arrows": "to", "from": "3172336367", "to": "156893225"}, {"arrows": "to", "from": "3172336367", "to": "1137245126420512768"}, {"arrows": "to", "from": "3172336367", "to": "4173464115"}, {"arrows": "to", "from": "3172336367", "to": "2303329192"}, {"arrows": "to", "from": "3172336367", "to": "776008295488389120"}, {"arrows": "to", "from": "3172336367", "to": "3027764087"}, {"arrows": "to", "from": "3172336367", "to": "2824340152"}, {"arrows": "to", "from": "3172336367", "to": "1338769440"}, {"arrows": "to", "from": "3172336367", "to": "2422604730"}, {"arrows": "to", "from": "3172336367", "to": "50332223"}, {"arrows": "to", "from": "156893944", "to": "2792096406"}, {"arrows": "to", "from": "156893944", "to": "946471628"}, {"arrows": "to", "from": "156893944", "to": "35143687"}, {"arrows": "to", "from": "407896826", "to": "2303329192"}, {"arrows": "to", "from": "28967679", "to": "84017214"}, {"arrows": "to", "from": "28967679", "to": "879295884554633217"}, {"arrows": "to", "from": "28967679", "to": "3126330196"}, {"arrows": "to", "from": "1059507259158466560", "to": "741355630447996928"}, {"arrows": "to", "from": "1059507259158466560", "to": "3170762787"}, {"arrows": "to", "from": "1059507259158466560", "to": "1193062312124526592"}, {"arrows": "to", "from": "1059507259158466560", "to": "2792096406"}, {"arrows": "to", "from": "1059507259158466560", "to": "2845311909"}, {"arrows": "to", "from": "1059507259158466560", "to": "1243230317172985856"}, {"arrows": "to", "from": "1059507259158466560", "to": "2824340152"}, {"arrows": "to", "from": "1059507259158466560", "to": "1383859117"}, {"arrows": "to", "from": "1059507259158466560", "to": "1216740896601006081"}, {"arrows": "to", "from": "1059507259158466560", "to": "1090533270918516736"}, {"arrows": "to", "from": "1059507259158466560", "to": "1338769440"}, {"arrows": "to", "from": "1059507259158466560", "to": "1246101558"}, {"arrows": "to", "from": "1059507259158466560", "to": "245760902"}, {"arrows": "to", "from": "1647837955", "to": "1060411731225309184"}, {"arrows": "to", "from": "1647837955", "to": "1092783122842902528"}, {"arrows": "to", "from": "1647837955", "to": "3060279023"}, {"arrows": "to", "from": "1647837955", "to": "1338769440"}, {"arrows": "to", "from": "1647837955", "to": "35143687"}, {"arrows": "to", "from": "1222784276111994880", "to": "84017214"}, {"arrows": "to", "from": "1222784276111994880", "to": "245760902"}, {"arrows": "to", "from": "1396966195", "to": "1383859117"}, {"arrows": "to", "from": "1396966195", "to": "1338769440"}, {"arrows": "to", "from": "1396966195", "to": "779312941854228480"}, {"arrows": "to", "from": "1396966195", "to": "156893225"}, {"arrows": "to", "from": "1396966195", "to": "3172336367"}, {"arrows": "to", "from": "1396966195", "to": "38011034"}, {"arrows": "to", "from": "2785936189", "to": "3585605837"}, {"arrows": "to", "from": "2785936189", "to": "2325480399"}, {"arrows": "to", "from": "3126330196", "to": "156631207"}, {"arrows": "to", "from": "3126330196", "to": "28311607"}, {"arrows": "to", "from": "3126330196", "to": "946471628"}, {"arrows": "to", "from": "3126330196", "to": "72090603"}, {"arrows": "to", "from": "3126330196", "to": "28967679"}, {"arrows": "to", "from": "2186150750", "to": "1246101558"}, {"arrows": "to", "from": "102630256", "to": "1184875627322793985"}, {"arrows": "to", "from": "1947599730", "to": "1193062312124526592"}, {"arrows": "to", "from": "1947599730", "to": "23462074"}, {"arrows": "to", "from": "1947599730", "to": "1057030969520209920"}, {"arrows": "to", "from": "2974942084", "to": "1059507259158466560"}, {"arrows": "to", "from": "2974942084", "to": "879295884554633217"}, {"arrows": "to", "from": "245760902", "to": "1137245126420512768"}, {"arrows": "to", "from": "245760902", "to": "1680999050"}, {"arrows": "to", "from": "1060411731225309184", "to": "719585509"}, {"arrows": "to", "from": "1060411731225309184", "to": "1647837955"}, {"arrows": "to", "from": "1060411731225309184", "to": "1092783122842902528"}, {"arrows": "to", "from": "118227879", "to": "2903638053"}, {"arrows": "to", "from": "2303329192", "to": "849084440"}, {"arrows": "to", "from": "2303329192", "to": "2845311909"}, {"arrows": "to", "from": "2303329192", "to": "35143687"}, {"arrows": "to", "from": "2303329192", "to": "407896826"}, {"arrows": "to", "from": "2303329192", "to": "50332223"}, {"arrows": "to", "from": "2303329192", "to": "1090533270918516736"}, {"arrows": "to", "from": "2303329192", "to": "2792096406"}, {"arrows": "to", "from": "2995651503", "to": "56623782"}, {"arrows": "to", "from": "1137245126420512768", "to": "245760902"}, {"arrows": "to", "from": "2422604730", "to": "1400497858843975681"}, {"arrows": "to", "from": "2422604730", "to": "1389466192528744448"}, {"arrows": "to", "from": "2422604730", "to": "2792096406"}, {"arrows": "to", "from": "2422604730", "to": "1273564671258308609"}, {"arrows": "to", "from": "2422604730", "to": "3172336367"}, {"arrows": "to", "from": "2422604730", "to": "407896826"}, {"arrows": "to", "from": "2422604730", "to": "1090533270918516736"}, {"arrows": "to", "from": "2422604730", "to": "2497708287"}, {"arrows": "to", "from": "2422604730", "to": "975730163983028225"}, {"arrows": "to", "from": "407765954", "to": "1219193024602750976"}, {"arrows": "to", "from": "407765954", "to": "61342631"}, {"arrows": "to", "from": "407765954", "to": "831783098"}, {"arrows": "to", "from": "407765954", "to": "40632889"}, {"arrows": "to", "from": "407765954", "to": "34603510"}, {"arrows": "to", "from": "407765954", "to": "409338486"}, {"arrows": "to", "from": "407765954", "to": "107086140"}, {"arrows": "to", "from": "407765954", "to": "2258895032"}, {"arrows": "to", "from": "407765954", "to": "407896826"}, {"arrows": "to", "from": "779312941854228480", "to": "3243770692"}, {"arrows": "to", "from": "77202376", "to": "829917412187267072"}, {"arrows": "to", "from": "77202376", "to": "742631305863700480"}, {"arrows": "to", "from": "77202376", "to": "58458149"}, {"arrows": "to", "from": "2325480399", "to": "2785936189"}, {"arrows": "to", "from": "1083604296640417792", "to": "823153539665039360"}, {"arrows": "to", "from": "72090603", "to": "3126330196"}, {"arrows": "to", "from": "72090603", "to": "2824340152"}, {"arrows": "to", "from": "39977971", "to": "1652949902"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+        // if this network requires displaying the configure window,
+        // put it in its div
+        options.configure["container"] = document.getElementById("config");
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+        network.on("stabilizationProgress", function(params) {
+      		document.getElementById('loadingBar').removeAttribute("style");
+	        var maxWidth = 496;
+	        var minWidth = 20;
+	        var widthFactor = params.iterations/params.total;
+	        var width = Math.max(minWidth,maxWidth * widthFactor);
+
+	        document.getElementById('bar').style.width = width + 'px';
+	        document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+	    });
+	    network.once("stabilizationIterationsDone", function() {
+	        document.getElementById('text').innerHTML = '100%';
+	        document.getElementById('bar').style.width = '496px';
+	        document.getElementById('loadingBar').style.opacity = 0;
+	        // really clean the dom element
+	        setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+	    });
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
